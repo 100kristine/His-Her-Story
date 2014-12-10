@@ -13,6 +13,8 @@ Scraping stories about real weddings to create a recommender system for engaged 
 - What influenced their choices in:
 -   location
 -   theme
+-   Emotionality/Sentiment: what was their favorite part of the wedding? (Detect peak of enthusiasm)
+-   Were there any stressors?
 
 
 - style/theme - A
