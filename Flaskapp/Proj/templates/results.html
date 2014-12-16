@@ -1,0 +1,82 @@
+<html>
+<head>
+	<style>
+	#header {
+    background-color:#00E6B8;
+    color:white;
+    font-family:helvetica;
+    text-align:center;
+    padding:5px;
+	}
+
+    #block {
+    background-color:#EB5875;
+    color:white;
+    font-family:helvetica;
+    text-align:center;
+    padding:5px;
+    list-style-type: none
+    }
+
+    #other {
+    background-color:#FFFFF;
+    color:white;
+    font-family:helvetica;
+    text-align:center;
+    padding:5px;
+    }
+
+    a {
+    color: white;
+    text-decoration: none;
+}
+    }
+
+	#blank {
+    line-height:30px;
+    background-color:#eeeeee;
+    height:700px;
+    width:400px;
+    float:left;
+    padding:5px; 
+}
+
+	#section {
+	font-family: helvetica;
+	height:700px;
+    width:600px;
+    float:left;
+    padding:10px; 
+}
+	</style>
+</head>
+
+<body>
+
+<div id="header">
+<h1 style="font-size:500%">(his + her) story</h1>
+<h2>a tool for finding wedding inspirations based on the story of how you met</h2>
+</div>
+
+<div id="blank">
+</div>
+<div id="other">
+We think you should check out these stories..
+</div>
+<div id = "block">
+
+
+<ul class=entries style="list-style-type: none">
+  {% for entry in entries %}
+    <li><h2><a href={{entry.url}}> {{ entry.name}}</a> </h2> {{entry.description}}</li>
+    <div id="other"> <br></div>
+  {% else %}
+    <li><em>Unbelievable.  No entries here so far</em>
+  {% endfor %}
+  </ul>
+
+<div></div><div></div><div></div>
+</div>
+
+</body>
+</html>
