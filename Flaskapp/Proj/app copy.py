@@ -15,11 +15,7 @@ from operator import itemgetter
 from gensim import models
 from gensim import corpora,similarities
 from gensim.corpora import TextCorpus, MmCorpus,Dictionary
-from createGraph import Graph,data
 
-g = Graph()
-g.addObjs([data[key] for key in data.keys()])
-common= set([i[0] for i in pickle.load(open('unigram_freq_dist','r')).most_common(70)])
 # configuration
 DATABASE = '/tmp/flaskr.db'
 DEBUG = True
@@ -42,7 +38,8 @@ def stem(tokens,stemmer):
     return [stemmer.stem(item) for item in tokens]
 
 def tokenize(text):
-    return [i.lower() for i in nltk.word_tokenize(text) if i not in string.punctuation]
+    tokens = [i.lower() for i in nltk.word_tokenize(text) if i not in string.punctuation]
+    return stem(tokens,stemmer)
 
 def getSimilarities(tokens,id2word,index,lsi):
     #make sure tokens are stemmed
@@ -55,21 +52,8 @@ def getSimilarities(tokens,id2word,index,lsi):
     """
     return list(enumerate(index[lsi[id2word.doc2bow(tokens)]]))
 
-def expand(query):
-    #Tag query, identify all adjectives and noun variants, then expand query with graph data
-    query = tokenize(query)
-    items = [item[0] for item in nltk.pos_tag(query) if item[1] in set(['NN','NNS','JJ','VBG','VBD'])]
-    expanded = []
-    for item in items:
-        #Add top 20 highly connected components with higher information
-        try:
-            expanded += [item[1] for item in g.getFreq(item,20) if item[1] not in common]
-        except: #Sometimes not very many connections in graph
-            pass
-    return expanded + query
-
 def getTopN(met,wishes,n=3):
-    tokens = met + [" "] + wishes
+    tokens = tokenize(met) + [" "] + tokenize(met)
     keys = pickle.load(open('keys','r'))
     lsi = pickle.load(open('lsi_model','r'))
     index = pickle.load(open('index.pickle','r'))
@@ -110,11 +94,8 @@ def home():
         
         Met = request.args.get('Met', '')
         Type = request.args.get('Type', '')
-        print Met,Type
 
         if len(Met) > 0:
-            Met = expand(Met)
-            Type = expand(Type)
             top = getTopN(Met,Type,n=3)
             print "MET",Met
             #for i in top:
